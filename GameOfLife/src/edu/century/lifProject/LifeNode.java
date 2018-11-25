@@ -5,8 +5,6 @@ public class LifeNode {
 	private boolean status; 
 	private boolean toBeStatus; 
 	
-	private int neighbors; 
-	
 	
 	LifeNode()
 	{
@@ -14,46 +12,17 @@ public class LifeNode {
 		
 	}
 	
-	LifeNode(boolean status, int neighbors)
+	LifeNode(boolean status)
 	{
 		this.status = status;
-		this.neighbors = neighbors; 
 	}
 	
-	//determineStatus are the two main functions to determine if a cell is alive
-	public void determineStatus()
-	{
-		if(neighbors >= 0 && neighbors <= 8)
-		{
-			
-		
-			if (neighbors >= 0 && neighbors < 2) 
-			{
-				toBeStatus = false;
-			}
-		
-//			else if(neighbors <= 2 && neighbors <= 3)
-//			{
-//				break; 
-//			}
-			
-			else if(neighbors == 3)
-			{
-				toBeStatus = true; 
-			}
-			
-			else if(neighbors > 3)
-			{
-				toBeStatus = false; 
-			}
-		}
-	}
+	
 	
 	public void setStatus()
 	{
 		status = toBeStatus; 
 	}
-	
 	
 	
 	//getters and setters
@@ -72,14 +41,5 @@ public class LifeNode {
 	public void setToBeStatus(boolean toBeStatus) {
 		this.toBeStatus = toBeStatus;
 	}
-
-	public int getNeighbors() {
-		return neighbors;
-	}
-
-	public void setNeighbors(int neighbors) {
-		this.neighbors = neighbors;
-	}
-	
 
 }
