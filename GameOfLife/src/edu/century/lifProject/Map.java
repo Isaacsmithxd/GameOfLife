@@ -73,8 +73,16 @@ public class Map
 		};
 	
 
-	Map()
+	public Map()
 	{
+		
+		rows = grid.length;
+		columns = grid[0].length; 
+	}
+	
+	public Map(int[][] map)
+	{
+		grid = map;
 		rows = grid.length;
 		columns = grid[0].length; 
 	}
