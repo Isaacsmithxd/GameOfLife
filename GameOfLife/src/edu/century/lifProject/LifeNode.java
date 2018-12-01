@@ -2,44 +2,74 @@ package edu.century.lifProject;
 
 public class LifeNode {
 	
-	private boolean status; 
-	private boolean toBeStatus; 
+	private int status; 
+	
+	NodeList list = new NodeList(); 
+	
+	int row, column; 
 	
 	
-	LifeNode()
+	public LifeNode()
 	{
-		status = false; 
+		status = 0; 
 		
 	}
 	
-	LifeNode(boolean status)
+	public LifeNode(int status)
 	{
-		this.status = status;
+		if(status == 0 || status == 1)
+			this.status = status;
+		else
+			System.out.println("Error! LifeNodes may only be 1's or 0's");
 	}
 	
-	
-	
-	public void setStatus()
+	public LifeNode(int status, int row, int column)
 	{
-		status = toBeStatus; 
+		this.row =  row;
+		this.column = column; 
+		
+		if(status == 0 || status == 1)
+		{
+			this.status = status;
+			//System.out.println("LifeNode " + '[' + row + "] [" + column + ']' + "intalized as " + status); 
+		}
+		else
+			System.out.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
+					
 	}
-	
+
+	public int determineNebighors()
+	{
+		return ListNode.countNeighbors(list.getHead());
+	}
 	
 	//getters and setters
-	public boolean getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void isStatus(boolean status) {
-		this.status = status;
+	public void setStatus(int grid) {
+		
+		if(grid == 0 || grid == 1)
+			this.status = grid;
+		else
+			System.out.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
+		
+	}
+	
+	public NodeList getList() {
+		return list;
 	}
 
-	public boolean getToBeStatus() {
-		return toBeStatus;
+	public void setList(NodeList list) {
+		this.list = list;
 	}
 
-	public void setToBeStatus(boolean toBeStatus) {
-		this.toBeStatus = toBeStatus;
+	public LifeNode copy(LifeNode original)
+	{
+		LifeNode copy = new LifeNode(); 
+		return copy;
 	}
+	
 
 }
