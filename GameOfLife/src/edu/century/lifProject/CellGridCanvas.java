@@ -31,49 +31,32 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		
 	// Game of life variables.
 	int gen = 0;
-	Map map = new Map();
+	Map map = new Map(Constants.RANDOM);
 	int rows = map.getRows();
 	int columns = map.getColumns();
-	Color BACKGROUND = new Color(0,0,0);
+	Color BACKGROUND = new Color(255,255,255);
 	Color LIFE = new Color(150,150,150);
 	boolean pause = true;
-	boolean drawGrid = true;
+	boolean drawGrid = false;
+	LifeNode logicGrid[][] = new LifeNode[rows][columns]; 
+
 	
 	
 	// Main method creates the driver object which starts the game loop.
-		public static void main(String[] args)
-		{
-			new CellGridCanvas();
-		}
+	public static void main(String[] args)
+	{
+		new CellGridCanvas();
+	}
 		
-	// Initializing the window.
+	// Initializing window and making "listGrid"
 	public CellGridCanvas()
 	{
-		// Initializing the JFrame.
-		frame = new JFrame(TITLE);
-				
-		// Setting the size of the JFrame.
-		frame.setSize(WIDTH, HEIGHT);
-				
-		// Setting the default close operation so the program stops running after you close the window.
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
-		// Setting the window to not be resizable.
-		frame.setResizable(false);
-				
-		// Setting the window to be in the center of the screen.
-		frame.setLocationRelativeTo(null);
-				
-		// Adding the frame to the driver.
-		frame.add(this);
-				
-		// Making the frame visible.
-		frame.setVisible(true);
-				
-		// Packing the frame.
-		frame.pack();
-				
-		addKeyListener(this);
+		//Using map to make lifeNode array
+		establish(logicGrid); 
+		
+		//setting up frame
+		initFrame(); 
+	
 		// Starting the game loop.
 		start();
         
@@ -83,7 +66,12 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
         } catch(Exception e){}
 	}
 	
-	// Starts a thread.
+	/**
+	 * Starts a new Light Weight process
+	 * 
+	 * @param none
+	 * @return none
+	 */
 	public synchronized void start()
 	{
 		thread = new Thread(this);
@@ -91,7 +79,12 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		running = true;
 	}
 	
-	// Stops the thread when you close the window.
+	/**
+	 * Ends this Light Weight Process
+	 * 
+	 * @param none
+	 * @return none
+	 */
 	public synchronized void stop()
 	{
 		try
@@ -105,7 +98,11 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		}
 	}
 	
-	// Main game loop.
+	/**
+	 * This Light Weight Process's main loop. Control transfers from {@link #start}
+	 * 
+	 * @param
+	 */
 	public void run()
 	{
 		  running = true;
@@ -155,7 +152,12 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	
 	private void tick() {}
 	
-	// This uses the paint method from the newly created window to show everything on screen.
+	/**
+	 * This uses the paint method from the newly created window to show everything on screen.
+	 * 
+	 * @param None
+	 * @return None
+	 */
 	private void render()
 	{
 		BufferStrategy bs = this.getBufferStrategy();
@@ -171,8 +173,8 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		g.setColor(BACKGROUND);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		g.setColor(Color.lightGray);
-		update();
+		//g.setColor(Color.lightGray);
+		//update();
 		
 		g.setColor(LIFE);
 		displayGeneration(g);
@@ -180,7 +182,7 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		if(!pause)
 		nextGeneration();
 		
-		g.setColor(Color.GRAY);
+		g.setColor(Color.BLACK);
 		g.setFont(fpsFont);
 		g.drawString("FPS: " + Integer.toString(fps), 1, 22);
 		g.drawString("GEN: " + Integer.toString(gen), 1, 44);
@@ -191,18 +193,18 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		g.dispose();
 		bs.show();
 	}
+
 	
-	// Updates the players position on screen based on input.
-	public void update()
-	{
-		
-	}
-	
+	/**
+	 * Displays current generation to window
+	 * @param g A Graphics2D Obj. In this instance, one containing a BufferStrategy.
+	 * @return None
+	 */
 	public void displayGeneration(Graphics2D g)
 	{
 		for(int i = 0; i < rows-1; i++)
 		{
-			for(int n = 0; n < columns-1; n++)
+			for(int n = 0; n < columns; n++)
 			{
 				g.setColor(LIFE);
 				if(map.grid[i][n] == 1)
@@ -210,7 +212,7 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 				
 				if(drawGrid)
 				{
-					g.setColor(Color.lightGray);
+					g.setColor(Color.BLACK);
 					g.drawRect(n*8, i*8, 8, 8);
 				}
 			}
@@ -222,9 +224,9 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		gen++;
 		int[][] future = new int[rows][columns];
 		
-		for(int m = 1; m < 60 - 1; m++)
+		for(int m = 1; m < rows - 1; m++)
 		{
-			for(int n = 1; n < 80 - 1; n++)
+			for(int n = 1; n < columns - 1; n++)
 			{
 				int aliveNeighbours = 0;
                 for (int i = -1; i <= 1; i++)
@@ -252,7 +254,128 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		
 		map.grid = future;
 	}
+	
+//	public void nextGeneration()
+//	{
+//		gen++;
+//		LifeNode[][] future = new LifeNode[rows][columns];
+//		establish(future); 
+//		
+//		for(int m = 1; m < rows - 1; m++)
+//		{
+//			for(int n = 1; n < columns - 1; n++)
+//			{
+//				int aliveNeighbours = logicGrid[m][n].determineNebighors(); 
+//                
+//                // Cell is lonely and dies
+//                if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours < 2))
+//                	future[m][n].setStatus(0);
+// 
+//                // Cell dies due to over population
+//                else if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours > 3))
+//                    future[m][n].setStatus(0);
+// 
+//                // A new cell is born
+//                else if ((logicGrid[m][n].getStatus() == 0) && (aliveNeighbours == 3))
+//                	future[m][n].setStatus(1);
+//                
+//                else
+//                	future[m][n].setStatus(logicGrid[m][n].getStatus()); 
+//			}
+//		}
+//		
+//		logicGrid = future; 
+//		updateMap(); 
+//	}
+	
+	/**
+	 * Instantiates a lifeNode grid complete with edges based on current 
+	 * status of map array. 
+	 * @param grid
+	 * @returns None
+	 */
+	public void establish(LifeNode[][] grid)
+	{
+		for(int m = 0; m < rows; m++)
+		{
+			for(int n = 0; n < columns; n++)
+			{
+				grid[m][n] = new LifeNode(map.grid[m][n], m, n);
+                       
+			}
+		}
+		
+		for(int m = 1; m < rows - 1; m++)
+		{
+			for(int n = 1; n < columns - 1; n++)
+			{
+				  for (int i = -1; i <= 1; i++)
+		              for (int j = -1; j <= 1; j++)
+		              {
+		              	if(i != 0 || j != 0)
+		              		grid[m][n].list.addToTail(logicGrid[m+i][n+j]); 
+		              }	
+                       
+			}
+		}
+		
+		
+	}
+	
+	/**
+	 * Updates map array based on status of logicGrid, primarily for display.
+	 * @param None
+	 * @return none
+	 */
+	public void updateMap()
+	{
+		for(int m = 1; m < rows - 1; m++)
+		{
+			for(int n = 1; n < columns - 1; n++)
+			{
+				map.grid[m][n] = logicGrid[m][n].getStatus(); 
+                       
+			}
+		}
+	}
+	
+	/**
+	 * Initializes all frame components and Adds KeyListeners
+	 * 
+	 * @param None
+	 * @return None
+	 */
+	public void initFrame()
+	{
+		// Initializing the JFrame.
+		frame = new JFrame(TITLE);
+				
+		// Setting the size of the JFrame.
+		frame.setSize(WIDTH, HEIGHT);
+				
+		// Setting the default close operation so the program stops running after you close the window.
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				
+		// Setting the window to not be resizable.
+		frame.setResizable(false);
+				
+		// Setting the window to be in the center of the screen.
+		frame.setLocationRelativeTo(null);
+				
+		// Adding the frame to the driver.
+		frame.add(this);
+				
+		// Making the frame visible.
+		frame.setVisible(true);
+				
+		// Packing the frame.
+		frame.pack();
+				
+		addKeyListener(this);
+	}
 
+	
+	//keyListners
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyChar();
@@ -271,4 +394,3 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 
-}
