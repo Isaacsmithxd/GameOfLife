@@ -1,9 +1,10 @@
 package edu.century.lifProject;
 
-public class NodeList {
+public class NodeList implements Cloneable {
+	
 	private ListNode head; 
 	private ListNode tail; 
-	private int numberOfNodes = 0; 
+	private int numberOfNodes; 
 	
 	public NodeList()
 	{
@@ -26,8 +27,21 @@ public class NodeList {
 		numberOfNodes++;
 	}
 	
+	public NodeList clone()
+	{
+		NodeList copy = new NodeList();
+		ListNode cursor; 
+		
+		for (cursor = this.head; cursor != null; cursor = cursor.getNextNode()) {
+			copy.addToTail(cursor.getData());
+		}
+		
+		return copy; 
+		
+	}
 	
 	
+	//Getters and Setters
 	public ListNode getHead() {
 		return head;
 	}

@@ -1,6 +1,6 @@
 package edu.century.lifProject;
 
-public class ListNode {
+public class ListNode implements Cloneable{
 	
 	private LifeNode data; 
 	private ListNode link; 
@@ -33,6 +33,14 @@ public class ListNode {
 
 	public void addNodeAfter(LifeNode element) {
 		link = new ListNode(element);
+	}
+	
+	public ListNode clone()
+	{
+		ListNode copy = new ListNode(this.data);
+		copy.setNextNode(this.getNextNode());
+		
+		return copy; 
 	}
 	
 	public static int size(ListNode head) {

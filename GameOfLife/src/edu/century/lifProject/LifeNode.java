@@ -1,10 +1,10 @@
 package edu.century.lifProject;
 
-public class LifeNode {
+public class LifeNode implements Cloneable{
 	
 	private int status; 
 	
-	NodeList list = new NodeList(); 
+	NodeList list;
 	
 	int row, column; 
 	
@@ -12,13 +12,15 @@ public class LifeNode {
 	public LifeNode()
 	{
 		status = 0; 
+		list = new NodeList(); 
 		
 	}
 	
 	public LifeNode(int status)
 	{
 		if(status == 0 || status == 1)
-			this.status = status;
+		{	this.status = status;
+			list = new NodeList();	} 
 		else
 			System.out.println("Error! LifeNodes may only be 1's or 0's");
 	}
@@ -27,20 +29,31 @@ public class LifeNode {
 	{
 		this.row =  row;
 		this.column = column; 
-		
+		list = new NodeList(); 
+	
 		if(status == 0 || status == 1)
 		{
 			this.status = status;
 			//System.out.println("LifeNode " + '[' + row + "] [" + column + ']' + "intalized as " + status); 
 		}
 		else
-			System.out.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
+			System.err.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
 					
 	}
 
 	public int determineNebighors()
 	{
 		return ListNode.countNeighbors(list.getHead());
+	}
+	
+	@Override
+	public LifeNode clone()
+	{
+		LifeNode copy = new LifeNode(this.status, this.row, this.column); 
+		copy.setList(this.list.clone());
+		
+		return copy;
+		
 	}
 	
 	//getters and setters
@@ -53,7 +66,7 @@ public class LifeNode {
 		if(grid == 0 || grid == 1)
 			this.status = grid;
 		else
-			System.out.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
+			System.err.println("\"Error! LifeNodes may only be 1's or 0's Cell:[" + row + "] [" + column + ']');
 		
 	}
 	
@@ -65,11 +78,6 @@ public class LifeNode {
 		this.list = list;
 	}
 
-	public LifeNode copy(LifeNode original)
-	{
-		LifeNode copy = new LifeNode(); 
-		return copy;
-	}
 	
 
 }

@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
+
 import javax.swing.JFrame;
 
 public class CellGridCanvas extends Canvas implements Runnable, KeyListener
@@ -25,9 +27,12 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	private int fps;
 	private Font fpsFont;
 	
-	// Initializing variables for the dimensions of the window.
+	// Initializing variables for the dimensions of the window. 646 by 509
 	private final int WIDTH = 646, HEIGHT = 509;
 	private final String TITLE = "Game of Life";
+	
+	//Menu GUI intializer
+	//MenuGUI menu = new MenuGUI();
 		
 	// Game of life variables.
 	int gen = 0;
@@ -37,7 +42,7 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	Color BACKGROUND = new Color(255,255,255);
 	Color LIFE = new Color(150,150,150);
 	boolean pause = true;
-	boolean drawGrid = false;
+	boolean drawGrid = true;
 	LifeNode logicGrid[][] = new LifeNode[rows][columns]; 
 
 	
@@ -153,7 +158,7 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	private void tick() {}
 	
 	/**
-	 * This uses the paint method from the newly created window to show everything on screen.
+	 * render uses the paint method from the newly created window to show everything on screen.
 	 * 
 	 * @param None
 	 * @return None
@@ -219,78 +224,84 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		}
 	}
 	
-	public void nextGeneration()
-	{
-		gen++;
-		int[][] future = new int[rows][columns];
-		
-		for(int m = 1; m < rows - 1; m++)
-		{
-			for(int n = 1; n < columns - 1; n++)
-			{
-				int aliveNeighbours = 0;
-                for (int i = -1; i <= 1; i++)
-                    for (int j = -1; j <= 1; j++)
-                        aliveNeighbours += map.grid[m + i][n + j];
-                
-                aliveNeighbours -= map.grid[m][n];
-                
-                // Cell is lonely and dies
-                if ((map.grid[m][n] == 1) && (aliveNeighbours < 2))
-                    future[m][n] = 0;
- 
-                // Cell dies due to over population
-                else if ((map.grid[m][n] == 1) && (aliveNeighbours > 3))
-                    future[m][n] = 0;
- 
-                // A new cell is born
-                else if ((map.grid[m][n] == 0) && (aliveNeighbours == 3))
-                    future[m][n] = 1;
-                
-                else
-                	future[m][n] = map.grid[m][n];
-			}
-		}
-		
-		map.grid = future;
-	}
-	
 //	public void nextGeneration()
 //	{
 //		gen++;
-//		LifeNode[][] future = new LifeNode[rows][columns];
-//		establish(future); 
+//		int[][] future = new int[rows][columns];
 //		
 //		for(int m = 1; m < rows - 1; m++)
 //		{
 //			for(int n = 1; n < columns - 1; n++)
 //			{
-//				int aliveNeighbours = logicGrid[m][n].determineNebighors(); 
+//				int aliveNeighbours = 0;
+//                for (int i = -1; i <= 1; i++)
+//                    for (int j = -1; j <= 1; j++)
+//                        aliveNeighbours += map.grid[m + i][n + j];
+//                
+//                aliveNeighbours -= map.grid[m][n];
 //                
 //                // Cell is lonely and dies
-//                if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours < 2))
-//                	future[m][n].setStatus(0);
+//                if ((map.grid[m][n] == 1) && (aliveNeighbours < 2))
+//                    future[m][n] = 0;
 // 
 //                // Cell dies due to over population
-//                else if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours > 3))
-//                    future[m][n].setStatus(0);
+//                else if ((map.grid[m][n] == 1) && (aliveNeighbours > 3))
+//                    future[m][n] = 0;
 // 
 //                // A new cell is born
-//                else if ((logicGrid[m][n].getStatus() == 0) && (aliveNeighbours == 3))
-//                	future[m][n].setStatus(1);
+//                else if ((map.grid[m][n] == 0) && (aliveNeighbours == 3))
+//                    future[m][n] = 1;
 //                
 //                else
-//                	future[m][n].setStatus(logicGrid[m][n].getStatus()); 
+//                	future[m][n] = map.grid[m][n];
 //			}
 //		}
 //		
-//		logicGrid = future; 
-//		updateMap(); 
+//		map.grid = future;
 //	}
+	
+	public void nextGeneration()
+	{
+		gen++;
+		LifeNode[][] future = new LifeNode[rows][columns];
+		establish(future); 
+		
+		for(int m = 1; m < rows - 1; m++)
+		{
+			for(int n = 1; n < columns - 1; n++)
+			{
+				int aliveNeighbours = logicGrid[m][n].determineNebighors(); 
+                
+                // Cell is lonely and dies
+                if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours < 2))
+                	future[m][n].setStatus(0);
+ 
+                // Cell dies due to over population
+                else if ((logicGrid[m][n].getStatus() == 1) && (aliveNeighbours > 3))
+                    future[m][n].setStatus(0);
+ 
+                // A new cell is born
+                else if ((logicGrid[m][n].getStatus() == 0) && (aliveNeighbours == 3))
+                	future[m][n].setStatus(1);
+                
+                else
+                	future[m][n].setStatus(logicGrid[m][n].getStatus()); 
+			}
+		}
+		
+		logicGrid = future; 
+		updateMap(); 
+	}
 	
 	/**
 	 * Instantiates a lifeNode grid complete with edges based on current 
 	 * status of map array. 
+	 * <p>
+	 * It should be noted, this method is only necessary beginning a new 
+	 * simulation, to create a lifeNode grid. Once a grid exists, it is
+	 * much more efficient to base the next generation off the previous one,
+	 * as opposed to using establish() to  make an entirely new grid each generation. 
+	 * 
 	 * @param grid
 	 * @returns None
 	 */
@@ -314,12 +325,21 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 		              {
 		              	if(i != 0 || j != 0)
 		              		grid[m][n].list.addToTail(logicGrid[m+i][n+j]); 
-		              }	
-                       
+		              }	              
 			}
 		}
-		
-		
+	}
+	
+	//Unimplemented
+	public void cloneArray(LifeNode[][] future)
+	{
+		for (int m = 0; m < rows; m++)
+		{
+			for (int n = 0; n < columns; n++)
+			{
+				future[m][n] = logicGrid[m][n].clone();
+			}
+		}	
 	}
 	
 	/**
@@ -394,3 +414,4 @@ public class CellGridCanvas extends Canvas implements Runnable, KeyListener
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 
+}

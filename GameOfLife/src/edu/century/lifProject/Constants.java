@@ -650,7 +650,7 @@ public class Constants {
 	
 	
 	public static int[][] createRandom(){
-		int[][] temp = new int[40][40];
+		int[][] temp = new int[80][80];
 		Random random = new Random();
 		
 		

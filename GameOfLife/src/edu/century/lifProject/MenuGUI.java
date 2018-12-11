@@ -37,15 +37,6 @@ public class MenuGUI {
 		frame.setVisible(true);
 	}
 	
-	
-	public static void main(String[] args) {
-		
-		MenuGUI menu = new MenuGUI();
-		
-		
-	}
-	
-	
 }
 
 
